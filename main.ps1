@@ -1,5 +1,4 @@
 $variable = "Hello!"
 $variable2 = "Goodbye!"
-
-Write-Host $variable 
-
+Write-Information $variable2
+Write-Information $variable
