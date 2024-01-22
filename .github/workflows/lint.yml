@@ -1,0 +1,35 @@
+name: Lint Powershell Scripts
+
+on:
+  pull_request:
+
+jobs:
+  analyze-scripts:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up PowerShell
+      uses: PowerShell/setup-powershell@v0.7.0
+      with:
+        pwsh-version: '7'
+
+    - name: Install PSScriptAnalyzer
+      run: |
+        Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser -SkipPublisherCheck
+
+    - name: Analyze PowerShell scripts and post results
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        $results = @()
+        $scripts = Get-ChildItem -Path . -Filter *.ps1 -Recurse
+        foreach ($script in $scripts) {
+          Write-Host "Analyzing $($script.FullName)"
+          $analysisResult = Invoke-ScriptAnalyzer -Path $script.FullName -EnableExit
+          $results += $analysisResult
+        }
+        $url = "https://api.github.com/repos/$GITHUB_REPOSITORY/issues/$GITHUB_ISSUE_NUMBER/comments"
+        Invoke-RestMethod -Uri $url -Headers @{Authorization="Bearer $env:GITHUB_TOKEN"} -Method POST -Body @{body=$results} -ContentType "application/json"
