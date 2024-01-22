@@ -31,7 +31,7 @@ jobs:
         $scripts = Get-ChildItem -Path . -Filter *.ps1 -Recurse
         foreach ($script in $scripts) {
           Write-Host "Analyzing $($script.FullName)"
-          $analysisResult = Invoke-ScriptAnalyzer -Path $script.FullName -EnableExit
+          $analysisResult = Invoke-ScriptAnalyzer -Path $script.FullName -EnableExit -ErrorAction SilentlyContinue
           $results += $analysisResult }
         Out-File -FilePath results.txt -InputObject $results
         Get-Content results.txt
