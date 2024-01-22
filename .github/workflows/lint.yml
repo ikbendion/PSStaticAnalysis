@@ -40,4 +40,4 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_PULL_REQUEST_NUMBER: ${{ github.event.number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: python ./github/workflows/scripts/check.py
+      run: python3 .github/workflows/scripts/check.py
