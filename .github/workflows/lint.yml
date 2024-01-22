@@ -11,14 +11,16 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Set up PowerShell
-      uses: PowerShell/setup-powershell@v0.7.0
-      with:
-        pwsh-version: '7'
+    - name: Install Powershell
+      shell: bash
+      run: |
+        sudo apt update -y && sudo apt install powershell -y 
+
 
     - name: Install PSScriptAnalyzer
+      shell: pwsh
       run: |
-        sudo apt update -y && sudo apt install powershell -y
+        Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser -SkipPublisherCheck
 
     - name: Analyze PowerShell scripts and post results
       shell: pwsh
