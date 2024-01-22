@@ -33,16 +33,5 @@ jobs:
           Write-Host "Analyzing $($script.FullName)"
           $analysisResult = Invoke-ScriptAnalyzer -Path $script.FullName -EnableExit
           $results += $analysisResult
-        }
-        $uri = "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.number }}/comments"
-        $token = $env:GITHUB_TOKEN
-        $headers = @{
-          "Content-Type" = "application/json"
-          "Authorization" = "Bearer $token"
-        }
-        # Define the comment body
-        $body = @{
-          "body" = $results
-        } | ConvertTo-Json
-        # Invoke the REST API
-        Invoke-RestMethod -Uri $uri -Method Post -Headers $headers -Body $body
+        Out-File -FilePath results.txt -InputObject $results
+        Get-Content results.txt
