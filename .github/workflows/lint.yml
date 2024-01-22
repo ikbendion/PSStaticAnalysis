@@ -36,8 +36,11 @@ jobs:
         Out-File -FilePath results.txt -InputObject $results
         Get-Content results.txt
         ls
-        exit 0 
-
+  post-results:
+    runs-on: ubuntu-latest
+    needs: analyze-scripts
+    if: always() 
+    steps:
     - name: Post Results to PR Comment
       uses: JoseThen/comment-pr@v1.2.0
       with:
