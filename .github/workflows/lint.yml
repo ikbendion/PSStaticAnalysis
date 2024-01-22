@@ -35,3 +35,4 @@ jobs:
           $results += $analysisResult }
         Out-File -FilePath results.txt -InputObject $results
         Get-Content results.txt
+        ls
