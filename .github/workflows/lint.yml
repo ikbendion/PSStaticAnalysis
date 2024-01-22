@@ -34,5 +34,15 @@ jobs:
           $analysisResult = Invoke-ScriptAnalyzer -Path $script.FullName -EnableExit
           $results += $analysisResult
         }
-        $url = "https://api.github.com/repos/$GITHUB_REPOSITORY/issues/$GITHUB_ISSUE_NUMBER/comments"
-        Invoke-RestMethod -Uri $url -Headers @{Authorization="Bearer $env:GITHUB_TOKEN"} -Method POST -Body @{body=$results} -ContentType "application/json"
+        $uri = "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.number }}/comments"
+        $token = $env:GITHUB_TOKEN
+        $headers = @{
+          "Content-Type" = "application/json"
+          "Authorization" = "Bearer $token"
+        }
+        # Define the comment body
+        $body = @{
+          "body" = $results
+        } | ConvertTo-Json
+        # Invoke the REST API
+        Invoke-RestMethod -Uri $uri -Method Post -Headers $headers -Body $body
