@@ -18,9 +18,10 @@ jobs:
 
     - name: Install PSScriptAnalyzer
       run: |
-        Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser -SkipPublisherCheck
+        sudo apt update -y && sudo apt install powershell -y
 
     - name: Analyze PowerShell scripts and post results
+      shell: pwsh
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
