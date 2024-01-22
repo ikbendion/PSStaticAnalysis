@@ -32,6 +32,6 @@ jobs:
         foreach ($script in $scripts) {
           Write-Host "Analyzing $($script.FullName)"
           $analysisResult = Invoke-ScriptAnalyzer -Path $script.FullName -EnableExit
-          $results += $analysisResult
+          $results += $analysisResult }
         Out-File -FilePath results.txt -InputObject $results
         Get-Content results.txt
