@@ -1,0 +1,43 @@
+name: Lint Powershell Scripts
+
+on:
+  pull_request:
+
+jobs:
+  analyze-scripts:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Install Powershell
+      shell: bash
+      run: |
+        sudo apt update -y && sudo apt install powershell python3 python3-pip -y 
+
+
+    - name: Install PSScriptAnalyzer
+      shell: pwsh
+      run: |
+        Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser -SkipPublisherCheck
+
+    - name: Analyze PowerShell scripts and post results
+      shell: pwsh
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        $results = @()
+        $scripts = Get-ChildItem -Path . -Filter *.ps1 -Recurse
+        foreach ($script in $scripts) {
+          Write-Host "Analyzing $($script.FullName)"
+          $analysisResult = Invoke-ScriptAnalyzer -Path $script.FullName
+          $results += $analysisResult }
+        Out-File -FilePath results.txt -InputObject $results
+
+    - name: Run Python script to post results as comment
+      env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_PULL_REQUEST_NUMBER: ${{ github.event.number }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: python3 .github/workflows/scripts/check.py
