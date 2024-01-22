@@ -28,6 +28,7 @@ if content:
 
     if response.status_code == 201:
         print('Comment posted successfully.')
+        sys.exit(1) 
     else:
         print(f'Failed to post comment. Status code: {response.status_code}')
 else:
