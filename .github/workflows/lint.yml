@@ -36,3 +36,9 @@ jobs:
         Out-File -FilePath results.txt -InputObject $results
         Get-Content results.txt
         ls
+
+    - name: Post Results to PR Comment
+      uses: JoseThen/comment-pr@v1.2.0
+      with:
+        file_path: 'results.txt'
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
